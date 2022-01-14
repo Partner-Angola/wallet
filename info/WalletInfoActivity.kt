@@ -33,16 +33,13 @@ class WalletInfoActivity : BaseActivity() {
                         0 -> viewModel.showWalletTransactionDialog()
                         1 -> WalletInputSeedDialog.showDialog(supportFragmentManager) { seed ->
                             val intent = Intent(this@WalletInfoActivity, WalletCreateAuthActivity::class.java).apply { putExtra("mnemonic", seed) }
-                            startActivity(intent) 
-                        }
+                            startActivity(intent)}
                         2 -> WalletInputPasswordDialog.showDialog(supportFragmentManager) { WalletSeedDialog.showDialog(supportFragmentManager) }
-                        3 -> {
-                            WalletLogoutDialog.showDialog(supportFragmentManager) {
+                        3 -> {WalletLogoutDialog.showDialog(supportFragmentManager) {
                                 viewModel.logoutWallet()
                                 setResult(RESULT_OK, Intent().apply { putExtra("logout", true) })
                                 finish()
-                            }
-                        }
+                            }}
                     }
                 }
             })
