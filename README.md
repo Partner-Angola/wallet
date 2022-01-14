@@ -1,9 +1,8 @@
-# 앙골라 월렛
-
-
+# 앙골라 월렛  
 
 
 ---
+[![GitHub license](https://img.shields.io/badge/license-APACHE-blue.svg)](https://github.com/Partner-Angola/wallet/blob/main/LICENSE.txt)
 ---
 
 ## 기능
