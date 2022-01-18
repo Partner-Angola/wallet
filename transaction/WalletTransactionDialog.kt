@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.joeware.android.gpulumera.base.BaseDialogFragment
 import com.joeware.android.gpulumera.databinding.DialogWalletTransactionBinding
@@ -47,52 +49,43 @@ class WalletTransactionDialog : BaseDialogFragment() {
             solanaAmount = it.getString("solanaAmount") ?: "0"
         }
         activity?.let { binding.vpMain.adapter = ViewPagerAdapter(it) }
+        binding.vpMain.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                binding.lyTab.getTabAt(position)?.select()
+            }
+        })
+        binding.lyTab.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                binding.vpMain.currentItem = tab?.position ?: 0
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+
+        })
+
         return binding.root
     }
 
     override fun setObserveData() {
-//        viewModel.getHistory.observe(this, Observer {
-//            var listHistory = it as MutableList<WalletHistory>
-//            binding.adapter?.setItems(this.angolaAmount, listHistory)
-//            if(listHistory.size == 0) binding.labelEmptyAmount.visibility = View.VISIBLE
-//        })
-//        viewModel.clickRefresh.observe(this, Observer {
-//            pubKey?.let {
-//                binding.adapter?.clear()
-//                viewModel.getHistory(it)
-//            }
-//        })
-//        viewModel.visibilityProgress.observe(this, Observer {
-//            binding.pbBeauty.visibility = it
-//        })
-//        viewModel.clickBack.observe(this, Observer {
-//            dismiss()
-//        })
+
     }
 
     override fun init() {
         binding.btnBack.setOnClickListener { dismiss() }
-//        arguments?.getString("pubKey")?.let { pubKey ->
-//            this.pubKey = pubKey
-//            viewModel.getHistory(pubKey)
-//        }
-//
-//        arguments?.getString("angolaAmount")?.let { angolaAmount ->
-//            viewModel.setAngolaAmount(angolaAmount)
-//            this.angolaAmount = angolaAmount
-//        }
-//
-//        arguments?.getString("solanaAmount")?.let { solanaAmount ->
-//            viewModel.setAngolaAmount(solanaAmount)
-////            binding.msgTokenAmount.text = "$angolaAmount AGLA"
-//        }
     }
 
     inner class ViewPagerAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
         override fun getItemCount(): Int  = 2
         override fun createFragment(position: Int): Fragment {
             return when(position) {
-                1 -> WalletTransactionFragment.newInstants(TokenType.ANGOLA, pubKey, angolaAmount)
+                0 -> WalletTransactionFragment.newInstants(TokenType.ANGOLA, pubKey, angolaAmount)
                 else -> WalletTransactionFragment.newInstants(TokenType.SOLANA, pubKey, solanaAmount)
             }
         }

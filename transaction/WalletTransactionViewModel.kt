@@ -80,8 +80,8 @@ class WalletTransactionViewModel : CandyViewModel() {
         if (type == TokenType.ANGOLA) {
             runDisposable(walletApi.getTokenHistory(myPubKey = pubKey), {
                 onProgress(false)
-                _items.postValue(Pair(amount, it))
-                _emptyData.postValue(it.isEmpty())
+                _items.postValue(Pair(amount, it.result))
+                _emptyData.postValue(it.result.isEmpty())
             }) {
                 onProgress(false)
                 _emptyData.postValue(true)
@@ -89,8 +89,8 @@ class WalletTransactionViewModel : CandyViewModel() {
         } else if (type == TokenType.SOLANA) {
             runDisposable(walletApi.getSolanaHistory(myPubKey = pubKey), {
                 onProgress(false)
-                _items.postValue(Pair(amount, it))
-                _emptyData.postValue(it.isEmpty())
+                _items.postValue(Pair(amount, it.result))
+                _emptyData.postValue(it.result.isEmpty())
             }) {
                 onProgress(false)
                 _emptyData.postValue(true)

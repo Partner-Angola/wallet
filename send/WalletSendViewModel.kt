@@ -181,7 +181,7 @@ class WalletSendViewModel : CandyViewModel() {
     fun finalSendToken() {
         onProgress(true)
         when (_myTokenType.value) {
-            TokenType.ANGOLA -> runDisposable(walletApi.tokenTransfer(mnemonic=_myMnemonic, amount=(_sendTokenAmount.multiply(BigDecimal(1000000000))), to=_sendAddress), {
+            TokenType.ANGOLA -> runDisposable(walletApi.tokenTransfer(mnemonic=_myMnemonic, amount=(_sendTokenAmount), to=_sendAddress), { //.multiply(BigDecimal(1000000000))
                 onProgress(false)
                 if(it.status) {
                     _showWalletSendSuccessFragment.call()
@@ -193,7 +193,7 @@ class WalletSendViewModel : CandyViewModel() {
                 _showToastMessage.postValue("전송 실패하였습니다. 다시 시도해주세요.")
                 onError(it)
             }
-            TokenType.SOLANA -> runDisposable(walletApi.solanaTransfer(mnemonic=_myMnemonic, amount=(_sendTokenAmount.multiply(BigDecimal(1000000000))), to=_sendAddress), {
+            TokenType.SOLANA -> runDisposable(walletApi.solanaTransfer(mnemonic=_myMnemonic, amount=(_sendTokenAmount), to=_sendAddress), { //.multiply(BigDecimal(1000000000))
                 onProgress(false)
                 if(it.status) {
                     _showWalletSendSuccessFragment.call()

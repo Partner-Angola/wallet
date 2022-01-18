@@ -25,6 +25,7 @@ class WalletTransactionFragment : CandyFragment() {
     private lateinit var binding: FragmentWalletTransactionBinding
     private val viewModel: WalletTransactionViewModel by viewModel()
     private var _myPubKey: String? = null
+    private var type: TokenType = TokenType.ANGOLA
 
     override fun getLayoutView(inflater: LayoutInflater, container: ViewGroup?): View {
         binding = FragmentWalletTransactionBinding.inflate(inflater, container, false)
@@ -35,11 +36,11 @@ class WalletTransactionFragment : CandyFragment() {
     }
 
     override fun setObserveLiveData() {
-        viewModel.items.observe(this, Observer { binding.adapter?.setItems(it.first, it.second, _myPubKey) })
+        viewModel.items.observe(this, Observer { binding.adapter?.setItems(type, it.first, it.second, _myPubKey) })
     }
 
     override fun init() {
-        val type = if (arguments?.getString("tokenType") == TokenType.SOLANA.name) TokenType.SOLANA else TokenType.ANGOLA
+        this.type = if (arguments?.getString("tokenType") == TokenType.SOLANA.name) TokenType.SOLANA else TokenType.ANGOLA
         _myPubKey = arguments?.getString("pubKey")
         val amount = arguments?.getString("amount") ?: "0"
         viewModel.getHistory(type, _myPubKey, amount)

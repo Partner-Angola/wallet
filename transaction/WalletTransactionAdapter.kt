@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.joeware.android.gpulumera.R
 import com.joeware.android.gpulumera.databinding.ItemWalletTransactionBinding
 import com.joeware.android.gpulumera.databinding.ItemWalletTransactionHeaderBinding
+import com.joeware.android.gpulumera.reward.model.TokenType
 import com.joeware.android.gpulumera.reward.model.WalletHistory
 import com.jpbrothers.base.util.log.JPLog
 import java.text.SimpleDateFormat
@@ -16,11 +17,13 @@ import java.util.regex.Pattern
 
 class WalletTransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private var type: TokenType = TokenType.ANGOLA
     private var amount: String = "0"
     private var myPubKey: String? = null
     private var items: List<WalletHistory>? = null
 
-    fun setItems(amount: String, items: List<WalletHistory>, pubKey: String?) {
+    fun setItems(type: TokenType, amount: String, items: List<WalletHistory>, pubKey: String?) {
+        this.type = type
         this.items = items
         this.amount = amount
         this.myPubKey = pubKey
@@ -46,6 +49,13 @@ class WalletTransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 
     inner class TransactionHistoryViewHeaderHolder(val binding: ItemWalletTransactionHeaderBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind() {
+            if (type == TokenType.ANGOLA) {
+                binding.labelTokenAmount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.logo_ang, 0, 0, 0)
+                binding.msgTokenAmountUnit.text = "AGLA"
+            } else if (type == TokenType.SOLANA){
+                binding.labelTokenAmount.setCompoundDrawablesWithIntrinsicBounds(R.drawable.logo_sol, 0, 0, 0)
+                binding.msgTokenAmountUnit.text = "SOL"
+            }
             binding.msgTokenAmount.text = amount
         }
     }
@@ -61,15 +71,25 @@ class WalletTransactionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
             if (item.from == myPubKey) {
                 binding.tvLabelReceive.text = "보내기"
                 binding.icReceive.setBackgroundResource(R.drawable.point_ic_send)
-            } else {
+
+            } else if (item.to == myPubKey) {
                 binding.tvLabelReceive.text = "받기"
                 binding.icReceive.setBackgroundResource(R.drawable.point_ic_receive)
             }
+            binding.tvAmount.text = "${item.value}"
 
+            when (item.confirmationStatus) {
+                "finalized" -> binding.tvProgress.text = SimpleDateFormat("MM월 dd일 HH:mm:ss").format(Date(item.timeStamp))
+                "confirmed" -> binding.tvProgress.text = "확인중"
+                "processed" -> binding.tvProgress.text = "진행중"
+            }
 
 
 //            binding.tvProgress.text = SimpleDateFormat("MM월 dd일 HH:mm").format(Date(item.blockTime))
-            binding.tvAmount.visibility = View.INVISIBLE
+//            binding.tvAmount.visibility = View.INVISIBLE
+
+
+
         }
     }
 
